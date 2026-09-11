@@ -44,4 +44,5 @@ python -m venv .venv
 - 첫 분석 결과: [REPORT.md](REPORT.md), `images/01_monthly_comparison.png`
 - 고온일수·지속기간: `heat_metrics.py`, `images/02_annual_heat.png`
 - 월별 고온일수: `images/03_monthly_heat.png`
-- `analysis.py`를 실행하면 현재까지의 세 분석을 모두 재생성한다.
+- 기준값 민감도(28℃·30℃·33℃): `images/04_threshold_comparison.png`
+- `analysis.py`를 실행하면 현재까지의 네 분석을 모두 재생성한다.

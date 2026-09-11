@@ -69,6 +69,45 @@ def analyze_heat(data, base_dir):
     print("\nPeriod means:")
     print(summary.to_string())
     analyze_monthly_heat(data, base_dir)
+    analyze_thresholds(data, base_dir)
+
+
+def analyze_thresholds(data, base_dir):
+    """같은 자료에 여러 기준을 적용해 결과가 기준 선택에 민감한지 확인한다."""
+    annual = pd.concat([annual_heat(data, threshold) for threshold in [28, 30, 33]], ignore_index=True)
+    metrics = ["hot_days_lower", "hot_days_upper", "longest_run_lower", "longest_run_upper"]
+    summary = annual.groupby(["threshold_c", "period"])[metrics].mean()
+    annual.to_csv(base_dir / "data/processed/threshold_annual.csv", index=False, encoding="utf-8-sig")
+    summary.to_csv(base_dir / "data/processed/threshold_comparison.csv", encoding="utf-8-sig")
+    fig, axes = plt.subplots(1, 2, figsize=(11, 6), layout="constrained")
+    for ax, metric, title in zip(axes, ["hot_days", "longest_run"],
+                                ["연평균 고온일수", "연도별 최장 연속일수의 평균"]):
+        for period, offset, color in [("2006-2015", -0.2, "#2563A6"), ("2016-2025", 0.2, "#D66036")]:
+            part = summary.xs(period, level="period")
+            x = pd.Series(range(len(part)), index=part.index) + offset
+            low, high = part[f"{metric}_lower"], part[f"{metric}_upper"]
+            ax.bar(x, low, width=0.38, color=color, label=period)
+            uncertain = high > low
+            if uncertain.any():
+                ax.errorbar(x[uncertain], low[uncertain],
+                            yerr=[low[uncertain] * 0, (high-low)[uncertain]],
+                            fmt="none", color="#222222", capsize=3)
+            for position, lo, hi in zip(x, low, high):
+                label = f"{lo:.1f}" if lo == hi else f"{lo:.1f}~{hi:.1f}"
+                ax.annotate(label, (position, hi), xytext=(0, 5), textcoords="offset points", ha="center", fontsize=9)
+        ax.set(title=title, ylabel="일수 (일)", xlabel="일최고기온 기준", xticks=[0, 1, 2],
+               xticklabels=["28℃ 이상", "30℃ 이상", "33℃ 이상"])
+        ax.set_ylim(0, summary[f"{metric}_upper"].max() * 1.22)
+        ax.grid(axis="y", alpha=0.2)
+        ax.set_axisbelow(True)
+        ax.spines[["top", "right"]].set_visible(False)
+    axes[0].legend(frameon=False)
+    fig.suptitle("고온 기준을 바꿔도 구간 간 차이가 유지될까?", fontsize=16)
+    fig.supxlabel("기상청 ASOS 창원(155), 2006-2025 | 세 기준 모두 같은 일최고기온 자료 사용\n범위는 결측 1일의 두 가정에서 계산 | 통계적 유의성 검정은 아님", fontsize=10)
+    fig.savefig(base_dir / "images/04_threshold_comparison.png", dpi=160)
+    plt.close(fig)
+    print("\nThreshold comparison:")
+    print(summary.to_string())
 
 
 def analyze_monthly_heat(data, base_dir):
