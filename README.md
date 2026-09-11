@@ -81,4 +81,6 @@ python -m venv .venv
 `stl_sensitivity.py`는 추세 평활폭 19·25·37개월과 robust 설정을 비교해
 `images/07_stl_sensitivity.png` 및 설정별 추세·요약 CSV를 생성한다.
 대시보드 첫 화면과 [실행 방법](dashboard/README.md)을 추가했다.
-로컬 브라우저 검증과 제출용 스크린샷은 다음 단계에서 진행한다. 예측은 수행하지 않았다.
+브라우저용 계산은 `verify_dashboard.py`로 Python 결과와 대조했다(Node.js 필요).
+[제출용 스크린샷 시나리오](dashboard/SCENARIOS.md)의 3개 화면을 저장하는 단계가 남아 있다.
+예측은 수행하지 않았다.
