@@ -23,3 +23,20 @@
 - analysis.py: 데이터 정제 및 분석 코드
 - images/: 시각화 이미지
 - requirements.txt: 실행에 필요한 라이브러리 목록
+
+## 실행 방법 (현재 단계)
+
+Python 3.10 이상에서 프로젝트 폴더를 열고 실행한다.
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe check_data.py
+.\.venv\Scripts\python.exe prepare_data.py
+```
+
+- 원본과 수집 방법: [data/README.md](data/README.md)
+- 통합 결과: `data/processed/changwon_daily.csv`
+- 2006~2025년 7,305일을 본 분석에 사용한다.
+- 2026년 1~8월 243일은 과거의 동일한 1~8월과 비교하는 추가 분석용이다.
+- 통합 단계에서는 기온 결측 2개를 그대로 유지하며, 행을 삭제하거나 보간하지 않는다.
