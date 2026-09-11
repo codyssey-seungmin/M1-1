@@ -42,7 +42,7 @@ def main():
 
     report = (BASE / "REPORT.md").read_text(encoding="utf-8")
     image_links = re.findall(r"!\[[^\]]*\]\(([^)]+)\)", report)
-    assert len(image_links) == 5
+    assert len(image_links) == 6
     for link in image_links:
         with Image.open(BASE / link) as picture:
             picture.verify()
@@ -51,7 +51,12 @@ def main():
         for link in re.findall(r"\[[^\]]*\]\(([^)]+)\)", document.read_text(encoding="utf-8")):
             if not link.startswith(("http://", "https://", "#")):
                 assert (document.parent / link).exists(), f"Broken link: {name}: {link}"
-    print("PASS: original values, annual/monthly totals, thresholds, January-August comparison, 5 PNGs, local links")
+    stl = pd.read_csv(PROCESSED / "stl_decomposition.csv", parse_dates=["date"])
+    assert len(stl) == 240 and not stl.isna().any().any()
+    assert (stl.observed - stl[["trend", "seasonal", "residual"]].sum(axis=1)).abs().max() < 1e-10
+    monthly_temp = pd.read_csv(PROCESSED / "monthly_by_year.csv").sort_values(["year", "month"])
+    assert (stl.observed.to_numpy() - monthly_temp.tavg.to_numpy()).__abs__().max() < 1e-10
+    print("PASS: original values, annual/monthly totals, thresholds, January-August, STL reconstruction, 6 PNGs, local links")
 
 
 if __name__ == "__main__":
