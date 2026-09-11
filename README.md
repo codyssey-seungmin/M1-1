@@ -41,6 +41,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe prepare_data.py
 .\.venv\Scripts\python.exe analysis.py
 .\.venv\Scripts\python.exe decompose.py
+.\.venv\Scripts\python.exe stl_sensitivity.py
 .\.venv\Scripts\python.exe verify_results.py
 ```
 
@@ -69,12 +70,14 @@ python -m venv .venv
 | 100개 이상 시계열 자료 | 원본 7,548행 |
 | 질문 3개 이상 | 리포트 1절의 3개 질문 |
 | 정제와 분석 기법 2가지 이상 | 결측·중복 점검, 월별 집계·구간 비교·연속일수 분석 |
-| 시각화 2개 이상 | PNG 6개, 리포트에 상대경로로 포함 |
+| 시각화 2개 이상 | PNG 7개, 리포트에 상대경로로 포함 |
 | 근거 있는 인사이트 3개 이상 | 리포트 8절 |
 | 결론·한계·AI 사용 로그 | 리포트 8~9절 |
 | 코드·데이터·재현 방법 | Python 스크립트, 원본, 의존성 목록과 위 실행 순서 |
 
 민감도 분석과 2026년 비교는 추가 분석이다.
 보너스 분해는 `decompose.py`로 실행하며 `images/06_stl_decomposition.png`와
-`data/processed/stl_decomposition.csv`를 생성한다. 설정 민감도 점검은 다음 단계에서 수행한다.
+`data/processed/stl_decomposition.csv`를 생성한다.
+`stl_sensitivity.py`는 추세 평활폭 19·25·37개월과 robust 설정을 비교해
+`images/07_stl_sensitivity.png` 및 설정별 추세·요약 CSV를 생성한다.
 대시보드는 이후 제작 예정이며 예측은 수행하지 않았다.

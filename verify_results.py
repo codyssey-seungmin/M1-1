@@ -42,7 +42,7 @@ def main():
 
     report = (BASE / "REPORT.md").read_text(encoding="utf-8")
     image_links = re.findall(r"!\[[^\]]*\]\(([^)]+)\)", report)
-    assert len(image_links) == 6
+    assert len(image_links) == 7
     for link in image_links:
         with Image.open(BASE / link) as picture:
             picture.verify()
@@ -56,7 +56,15 @@ def main():
     assert (stl.observed - stl[["trend", "seasonal", "residual"]].sum(axis=1)).abs().max() < 1e-10
     monthly_temp = pd.read_csv(PROCESSED / "monthly_by_year.csv").sort_values(["year", "month"])
     assert (stl.observed.to_numpy() - monthly_temp.tavg.to_numpy()).__abs__().max() < 1e-10
-    print("PASS: original values, annual/monthly totals, thresholds, January-August, STL reconstruction, 6 PNGs, local links")
+    trends = pd.read_csv(PROCESSED / "stl_sensitivity_trends.csv", parse_dates=["date"]).set_index("date")
+    sensitivity = pd.read_csv(PROCESSED / "stl_sensitivity_summary.csv")
+    assert trends.shape == (240, 6) and len(sensitivity) == 6
+    assert (trends["trend=25, robust=True"].to_numpy() - stl.trend.to_numpy()).__abs__().max() < 1e-10
+    for row in sensitivity.itertuples():
+        curve = trends[f"trend={row.trend_window}, robust={row.robust}"]
+        difference = curve.loc["2016":"2025"].mean() - curve.loc["2006":"2015"].mean()
+        assert abs(difference - row.difference_c) < 1e-10
+    print("PASS: original values, annual/monthly totals, thresholds, January-August, STL and sensitivity, 7 PNGs, local links")
 
 
 if __name__ == "__main__":
