@@ -45,4 +45,5 @@ python -m venv .venv
 - 고온일수·지속기간: `heat_metrics.py`, `images/02_annual_heat.png`
 - 월별 고온일수: `images/03_monthly_heat.png`
 - 기준값 민감도(28℃·30℃·33℃): `images/04_threshold_comparison.png`
-- `analysis.py`를 실행하면 현재까지의 네 분석을 모두 재생성한다.
+- 2026년 동일 기간 비교: `compare_2026.py`, `images/05_2026_comparison.png`
+- `analysis.py`를 실행하면 현재까지의 다섯 분석을 모두 재생성한다.
