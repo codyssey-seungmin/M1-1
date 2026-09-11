@@ -68,3 +68,52 @@ def analyze_heat(data, base_dir):
     print(annual.to_string(index=False))
     print("\nPeriod means:")
     print(summary.to_string())
+    analyze_monthly_heat(data, base_dir)
+
+
+def analyze_monthly_heat(data, base_dir):
+    """고온일이 0일인 월도 포함해 연도별 월간 고온일수의 10년 평균을 구한다."""
+    daily = data.copy()
+    daily["hot_lower"] = daily["tmax"].ge(30) & daily["tmax"].notna()
+    daily["hot_upper"] = daily["hot_lower"] | daily["tmax"].isna()
+    # 고온일만 필터링하면 0일인 월이 사라지므로 모든 날짜를 집계한다.
+    monthly = daily.groupby(["period", "year", "month"], as_index=False).agg(
+        hot_days_lower=("hot_lower", "sum"), hot_days_upper=("hot_upper", "sum")
+    )
+    means = monthly.groupby(["month", "period"])[["hot_days_lower", "hot_days_upper"]].mean()
+    lower = means["hot_days_lower"].unstack("period")
+    upper = means["hot_days_upper"].unstack("period")
+    comparison = pd.DataFrame(index=lower.index)
+    for period in ["2006-2015", "2016-2025"]:
+        comparison[f"{period}_lower"] = lower[period]
+        comparison[f"{period}_upper"] = upper[period]
+    comparison["difference_lower"] = lower["2016-2025"] - upper["2006-2015"]
+    comparison["difference_upper"] = upper["2016-2025"] - lower["2006-2015"]
+    monthly.to_csv(base_dir / "data/processed/monthly_heat_by_year.csv", index=False, encoding="utf-8-sig")
+    comparison.to_csv(base_dir / "data/processed/monthly_heat_comparison.csv", encoding="utf-8-sig")
+
+    fig, ax = plt.subplots(figsize=(11, 6), layout="constrained")
+    for period, offset, color in [("2006-2015", -0.2, "#2563A6"), ("2016-2025", 0.2, "#D66036")]:
+        x = lower.index + offset
+        lo, hi = lower[period], upper[period]
+        ax.bar(x, lo, width=0.38, color=color, label=period)
+        uncertain = hi > lo
+        if uncertain.any():
+            ax.errorbar(x[uncertain], lo[uncertain],
+                        yerr=[lo[uncertain] * 0, (hi - lo)[uncertain]],
+                        fmt="none", color="#222222", capsize=3)
+        for month, low, high in zip(x, lo, hi):
+            label = f"{low:.1f}" if low == high else f"{low:.1f}~{high:.1f}"
+            ax.text(month, high + 0.25, label, ha="center", fontsize=9)
+    ax.set(title="창원 월별 고온일수: 늘어난 더위는 어느 달에 집중됐을까?",
+           xlabel="월", ylabel="연평균 고온일수 (일/해당 월)", xticks=range(1, 13),
+           ylim=(0, upper.max().max() * 1.18))
+    ax.legend(frameon=False)
+    ax.grid(axis="y", alpha=0.2)
+    ax.set_axisbelow(True)
+    ax.spines[["top", "right"]].set_visible(False)
+    fig.supxlabel("기상청 ASOS 창원(155) | 일최고기온 30℃ 이상 | 고온일 0일인 월도 포함\n각 연도의 월별 일수를 10년 평균 | 최근 구간 1월 0.0~0.1일은 결측 1일로 인한 범위", fontsize=10)
+    fig.savefig(base_dir / "images/03_monthly_heat.png", dpi=160)
+    plt.close(fig)
+    print("\nMonthly heat comparison:")
+    print(comparison.to_string())

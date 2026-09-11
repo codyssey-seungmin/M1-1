@@ -43,4 +43,5 @@ python -m venv .venv
 - 통합 단계에서는 기온 결측 2개를 그대로 유지하며, 행을 삭제하거나 보간하지 않는다.
 - 첫 분석 결과: [REPORT.md](REPORT.md), `images/01_monthly_comparison.png`
 - 고온일수·지속기간: `heat_metrics.py`, `images/02_annual_heat.png`
-- `analysis.py`를 실행하면 현재까지의 두 분석을 모두 재생성한다.
+- 월별 고온일수: `images/03_monthly_heat.png`
+- `analysis.py`를 실행하면 현재까지의 세 분석을 모두 재생성한다.
