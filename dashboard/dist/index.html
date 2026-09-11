@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>창원 더위 탐색</title><meta name="description" content="창원 관측소 기온과 고온일수를 기간·기준별로 탐색합니다.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='%23d66036'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css"></head><body><main>
+<header><span class="eyebrow">M1-1 · 창원 관측소 155</span><h1>창원 더위 탐색</h1><p>같은 기간을 비교하며, 더위의 빈도와 지속성을 살펴보세요.</p></header>
+<section class="controls" aria-label="분석 조건">
+<label>시작 연도<select id="start"></select></label><label>종료 연도<select id="end"></select></label>
+<label>비교 기간<select id="scope"><option value="full">1~12월</option><option value="janaug">1~8월</option></select></label>
+<label>고온 기준<select id="threshold"><option value="28">28℃ 이상</option><option value="30" selected>30℃ 이상</option><option value="33">33℃ 이상</option></select></label>
+</section><p id="notice" role="status" aria-live="polite"></p>
+<section class="cards" aria-label="요약"><article><span>연평균 고온일수</span><strong id="hot">—</strong></article><article><span>연도별 최장 연속일수 평균</span><strong id="run">—</strong></article><article><span>최고기온 결측</span><strong id="missing">—</strong></article></section>
+<section class="panel"><h2>연도별 고온일수</h2><p>고온일은 선택한 기준 이상의 일최고기온이 관측된 날입니다.</p><div id="chart"></div></section>
+<section class="panel"><h2>연도별 계산표</h2><div class="table-wrap"><table><thead><tr><th scope="col">연도</th><th scope="col">기간 일수</th><th scope="col">고온일수</th><th scope="col">고온일 비율</th><th scope="col">최장 연속일수</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<footer><p>결측일이 고온일이 아닌 경우와 맞는 경우를 계산해 범위로 표시합니다. 범위는 신뢰구간이 아닙니다. 연속일수는 각 연도·선택 기간 안에서 계산합니다.</p><p>출처: <a href="https://data.kma.go.kr/data/grnd/selectAsosRltmList.do?pgmNo=36">기상청 ASOS 창원(155)</a> · 2006-01-01~2026-08-31 · 2026년은 연간 결과가 아닙니다.</p></footer>
+</main><script src="data.js"></script><script src="app.js"></script></body></html>

@@ -80,4 +80,5 @@ python -m venv .venv
 `data/processed/stl_decomposition.csv`를 생성한다.
 `stl_sensitivity.py`는 추세 평활폭 19·25·37개월과 robust 설정을 비교해
 `images/07_stl_sensitivity.png` 및 설정별 추세·요약 CSV를 생성한다.
-대시보드는 이후 제작 예정이며 예측은 수행하지 않았다.
+대시보드 첫 화면과 [실행 방법](dashboard/README.md)을 추가했다.
+로컬 브라우저 검증과 제출용 스크린샷은 다음 단계에서 진행한다. 예측은 수행하지 않았다.
