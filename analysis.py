@@ -1,4 +1,4 @@
-"""첫 번째 질문: 두 10년 구간의 월별 평균기온 비교."""
+"""월별 평균기온과 연간 고온일수·지속기간을 분석한다."""
 
 from pathlib import Path
 import os
@@ -10,6 +10,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 import pandas as pd
+from heat_metrics import analyze_heat
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -76,6 +77,7 @@ def main():
     plt.close(fig)
     print(comparison.round(3).to_string())
     print("Saved: images/01_monthly_comparison.png")
+    analyze_heat(main_data, BASE_DIR)
 
 
 if __name__ == "__main__":
