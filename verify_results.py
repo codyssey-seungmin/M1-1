@@ -42,7 +42,7 @@ def main():
 
     report = (BASE / "REPORT.md").read_text(encoding="utf-8")
     image_links = re.findall(r"!\[[^\]]*\]\(([^)]+)\)", report)
-    assert len(image_links) == 7
+    assert len(image_links) == 10
     for link in image_links:
         with Image.open(BASE / link) as picture:
             picture.verify()
@@ -64,7 +64,7 @@ def main():
         curve = trends[f"trend={row.trend_window}, robust={row.robust}"]
         difference = curve.loc["2016":"2025"].mean() - curve.loc["2006":"2015"].mean()
         assert abs(difference - row.difference_c) < 1e-10
-    print("PASS: original values, annual/monthly totals, thresholds, January-August, STL and sensitivity, 7 PNGs, local links")
+    print("PASS: original values, annual/monthly totals, thresholds, January-August, STL and sensitivity, 10 PNG links, local links")
 
 
 if __name__ == "__main__":
